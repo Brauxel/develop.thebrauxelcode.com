@@ -1,0 +1,572 @@
+@charset "utf-8";
+/* 
+	CSS Document for The Brauxel Code 
+	by Aakash Bhatia <akash.bhatia1184@gmail.com>
+	URI: http://thebrauxelcode.com/
+	Author URI: http://thebrauxelcode.com/
+*/
+/*------------------------------------------------------------------------------------	
+	0.	CSS Resets
+	1.	Global Styles
+	6.	Media Queries
+	7.	Font Embedding
+-------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------*/
+/*	0.	CSS Resets
+/*-----------------------------------------------------------------------------------*/
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, address, main {
+  display: block;
+}
+
+address {
+	font-style:normal;
+}
+
+/*-----------------------------------------------------------------------------------*/
+/*	1.	Global Styles
+/*-----------------------------------------------------------------------------------*/
+/* Elements */
+html {
+	overflow:auto;
+	height:auto;
+}
+	html.no-scroll {
+		overflow:hidden;
+		height:100%;
+	}
+	
+body {
+	color:#555;
+	font-family:Helvetica, Arial, sans-serif;
+	font-size:13px;
+	line-height:1.4;
+}
+
+a {
+	transition:all 0.4s ease-out 0s;
+	color:inherit;
+	text-decoration:none;
+	outline:none !important;
+}
+
+img {
+	border:none;
+	max-width:100%;
+}
+
+main {
+	padding-bottom:20px;
+	padding-top:98px;
+}
+
+aside {
+	width:24%;
+	margin-left:1%;
+	float:left;
+}
+
+h1 {
+	font-size:30px;
+	margin-bottom:10px;
+}
+
+h2 {
+	font-size:24px;
+	margin-bottom:10px;
+}
+
+h3 {
+	font-size:18px;
+	margin-bottom:10px;
+}
+
+h4 {
+	font-size:16px;
+	margin-bottom:10px;
+}
+
+h5 {
+	font-size:14px;
+}
+
+h6 {
+	font-size:12px;
+}
+
+p {
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+/* Header Styles */	
+header {
+	padding:25px 0px;
+	position:fixed;
+	border-bottom:1px #ccc solid;
+	width:100%;
+	background:rgba(255, 255, 255, 0.95);
+	z-index:999;
+}
+
+#logo {
+	background-image:url(../images/thebrauxelcode.png);
+	background-repeat:no-repeat;
+	background-size:contain;
+	width:189px;
+	height:48px;
+	display:block;
+	text-indent:-1000px;
+	overflow:hidden;
+	float:left;
+}
+
+nav {
+	float:left;
+}
+
+#main-menu {
+	list-style-type:none;
+	margin-left:30px;
+	overflow:hidden;
+	width:100%;
+	padding-top:15px;
+}
+	#main-menu li {
+		float:left;
+		border-left:1px solid #333;
+	}
+		#main-menu li:first-child {
+			border-left:none;
+		}
+		/*#main-menu li:before {
+			content:"/";
+		}
+		#main-menu li:first-child:before {
+			content:none;
+		}*/
+		#main-menu li a {
+			text-transform:uppercase;
+			padding-left:10px;
+			padding-right:10px;
+			color:#333;
+			line-height:1.2;
+		}
+
+.scrollToTop {
+	float:right;
+	background:#333 url(../images/sprite.png) no-repeat scroll 9px -540px;
+	width:32px;
+	height:32px;
+	text-indent:-1000px;
+	overflow:hidden;
+	margin-right:20px;
+	display:none;
+	margin-top:6px;
+}
+	.scrollToTop:hover {
+		background-position:9px -514px;
+		background-color:#feeb43;
+	}
+
+#social-icons {
+	list-style-type:none;
+	float:right;
+	overflow:hidden;
+	width:82px;
+	padding-top:6px;
+}
+	#social-icons li {
+		float:left;
+		padding-left:5px;
+		padding-right:5px;
+	}
+		#social-icons li a {
+			height:31px;
+			width:31px;
+			display:block;
+			text-indent:-1000px;
+			overflow:hidden;
+		}
+		#social-icons li.twitter a {
+			background:rgba(0, 0, 0, 0) url("../images/social-icons/twitter.png") no-repeat scroll 0 0;
+		}
+			#social-icons li.twitter a:hover {
+				background-position:0px -31px;
+				background-color:#48c4d2;
+			}
+		#social-icons li.facebook a {
+			background:rgba(0, 0, 0, 0) url("../images/social-icons/facebook.png") no-repeat scroll 0 0;
+		}
+			#social-icons li.facebook a:hover {
+				background-position:0px -31px;
+				background-color:#3b5998;
+			}
+			
+/* Footer Styles */
+footer {
+	border-top:1px solid #eee;
+	color:#777;
+	font-size:12px;
+}
+
+/* Classes */
+.wrap {
+	width:1260px;
+	margin:0 auto;
+	padding-left:20px;
+	padding-right:20px;
+}
+
+.clear {
+	clear:both;
+}
+
+.center {
+	display:block;
+	margin:0 auto;
+}
+
+.link-1 {
+	background-color:#333;
+	text-transform:uppercase;
+	color:#fff;
+	padding:11px 11px 11px 11px;
+	font:bold 11px Helvetica,Arial,sans-serif;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+	display:inline-block;
+	margin-top:10px;
+}
+	.link-1:hover {
+		background-color:#feeb43;
+		color:#333;
+	}
+
+.main-content {
+	width:74%;
+	margin-right:1%;
+	float:left;
+}
+
+.side-menu {
+	list-style-type:none;
+}
+	.side-menu .date {
+		font-size:12px;
+		color:#CCCCCC;
+	}
+	
+.border {
+	border:1px solid #e1e8ed;
+	padding-top:10px;
+	padding-bottom:10px;
+	padding-left:10px;
+	padding-right:10px;
+}
+
+.three-columns {
+	width:100%;
+	overflow:hidden;
+}
+	ul.three-columns {
+		list-style-type:none;
+		margin-left:0px;
+	}
+	.three-columns .column {
+		width:30%;
+		margin-left:1.5%;
+		margin-right:1.5%;
+		float:left;
+		margin-bottom:20px;
+	}
+		.three-columns .column:nth-child(3n+1) {
+			clear:both;
+		}
+
+.five-columns {
+	overflow:hidden;
+	width:100%;
+}
+	ul.five-columns {
+		list-style-type:none;
+		margin-left:0px;
+	}
+	.five-columns .column {
+		width:18%;
+		margin-left:1%;
+		margin-right:1%;
+		float:left;
+		margin-bottom:20px;
+	}
+		.five-columns .column:nth-child(5n+1) {
+			clear:both;
+		}
+		
+.half-wdith {
+	width:100%;
+	overflow:hidden;
+}
+	.half-width .left {
+		float:left;
+		width:50%;
+	}
+	.half-width .right {
+		float:left;
+		width:50%;
+	}
+/*-----------------------------------------------------------------------------------*/
+/*	2.	Home Page Styles
+/*-----------------------------------------------------------------------------------*/
+.featured-categories {
+	padding-top:20px;
+}
+	.featured-categories .column {
+		background-color:#fafafa;
+		color:#666;
+	}
+		.featured-categories h3 {
+			text-align:center;
+		}
+		.featured-categories img {
+			display:block;
+			margin:0 auto;
+		}
+
+.contact-widget {
+	padding-top:20px;
+}
+	.contact-widget .column a {
+		text-align:center;
+		display:block;
+		padding-top:10px;
+		padding-bottom:10px;
+		border:1px solid #e1e8ed;
+		background-color:#fafafa;
+		font-weight:bold;
+		font-size:16px;
+	}
+		.contact-widget .column a:hover {
+			background-color:#333;
+			color:#fff;
+		}
+
+.full-page-slider {
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+}
+
+.full-page-slider img {
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	margin:auto;
+	min-width:100%;
+	min-height:100%;
+}
+
+.full-page-slider h2 {
+	font-size:24px;
+	position:absolute;
+	display:block;
+	left:0;
+	right:0;
+	top:20%;
+	bottom:0;
+	margin:0 auto;
+	text-align:center;
+	color:#000;
+}
+
+.full-page-slider p {
+	position:absolute;
+	z-index:9;
+	display:block;
+	left:0;
+	right:0;
+	top:25%;
+	margin:0 auto;
+	width:560px;
+	padding:10px 20px;
+	color:#000;
+	font-family:"Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+	font-size:20px;
+	border:1px solid #000;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+}
+/*-----------------------------------------------------------------------------------*/
+/*	3.	Portfolio Page Styles
+/*-----------------------------------------------------------------------------------*/
+#portfolio .column {
+	margin-bottom:15px;
+}
+#portfolio .overlay-layer-container {
+	position:relative;
+}
+#portfolio img, #portfolio a {
+	display:block;
+}
+#portfolio .overlay-layer {
+	position:absolute;
+	top:0px;
+	left:0px;
+	background:rgba(51, 51, 51, 0.8);
+	width:100%;
+	text-align:center;
+	display:none;
+}
+	#portfolio .overlay-layer p {
+		margin-top:0px;
+		margin-bottom:0px;
+		line-height:1;
+		font-size:18px;
+		font-weight:300;
+		font-family:Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
+		color:#fff;
+	}
+
+#portfolio h4 a {
+	background-color:#f0f0f0;
+	padding-top:10px;
+	padding-bottom:10px;
+	text-indent:10px;
+}
+/*-----------------------------------------------------------------------------------*/
+/*	3.	Portfolio Page Styles
+/*-----------------------------------------------------------------------------------*/
+#about .three-columns {
+	margin-top:10px;
+}
+	
+.grey-columns .column {
+	background-color:#d8d8d8;
+	padding-top:20px;
+	padding-left:1.5%;
+	padding-right:1.5%;
+	width:27%;
+	text-align:center;
+}
+.grey-columns h4 {
+	margin-top:10px;
+}
+/*-----------------------------------------------------------------------------------*/
+/*	4.	Blog Listing Page Styles
+/*-----------------------------------------------------------------------------------*/
+.blogs article {
+	padding-top:20px;
+	padding-bottom:20px;
+	border-bottom:1px solid #ccc;
+}
+	.blogs article:first-child {
+		padding-top:0px;
+	}
+	.blogs article:last-child {
+		border-bottom:0px;
+	}
+/*-----------------------------------------------------------------------------------*/
+/*	5.	Responsive Slider Styles
+/*-----------------------------------------------------------------------------------*/
+/*! http://responsiveslides.com v1.54 by @viljamis */
+.rslides {
+	position: relative;
+	list-style: none;
+	overflow: hidden;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+.rslides li {
+	-webkit-backface-visibility: hidden;
+	position: absolute;
+	display: none;
+	width: 100%;
+	left: 0;
+	top: 0;
+}
+.rslides li:first-child {
+	position: relative;
+	display: block;
+	float: left;
+}
+.rslides img {
+	display: block;
+	height: auto;
+	float: left;
+	width: 100%;
+	border: 0;
+}
+/*-----------------------------------------------------------------------------------*/
+/*	5.	Media Queries
+/*-----------------------------------------------------------------------------------*/
+@media screen and (max-width: 1300px) {
+	.wrap {
+		width:96%;
+		margin:0 auto;
+		padding-left:2%;
+		padding-right:2%;
+	}
+}
+@media screen and (max-width: 1000px) {
+	.three-columns .column {
+		width:46%;
+		margin-left:2%;
+		margin-right:2%;
+		float:left;
+		margin-bottom:20px;
+	}
+		.three-columns .column:nth-child(2n+1) {
+			clear:both;
+		}
+		.three-columns .column:nth-child(3n+1) {
+			clear:none;
+		}
+		
+	.five-columns .column {
+		width:31%;
+	}
+		.five-columns .column:nth-child(3n+1) {
+			clear:both;
+		}
+		.five-columns .column:nth-child(5n+1) {
+			clear:none;
+		}
+}
+@media screen and (max-width: 600px) {
+	.three-columns .column {
+		width:460px;
+		float:none;
+		margin:0 auto 10px;
+	}	
+
+	.five-columns .column {
+		width:47%;
+	}
+		.five-columns .column:nth-child(2n+1) {
+			clear:both;
+		}
+		.five-columns .column:nth-child(3n+1) {
+			clear:none;
+		}
+}
+@media screen and (max-width: 480px) {
+	.three-columns .column {
+		width:96%;
+	}
+	.five-columns .column {
+		width:96%;
+		margin-left:2%;
+		margin-right:2%;
+	}
+}
