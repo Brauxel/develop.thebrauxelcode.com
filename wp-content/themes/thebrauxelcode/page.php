@@ -90,7 +90,12 @@ if( isset( $get->errors ) ) {
 		echo 'errors';
 		//print_r($get->errors);
 } else {
-	echo $get;
+	 $gs = json_decode($get);
+	 //print_r($g);
+	 
+	 foreach($gs as $g):
+	 print_r($g); echo '<br><br><br><br>';
+	 endforeach;
 }
 
 
