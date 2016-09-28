@@ -1221,6 +1221,18 @@ class dcwss_OAuthUtil {
 }
 
 
+
+// google plus stat
+echo '<a target="_blank" href="https://www.googleapis.com/plus/v1/people/106031668801901696693/activities/public?key=AIzaSyBYdInWt10UO6Xri6gX8lfg2dtvEEsVyfE">https://www.googleapis.com/plus/v1/people/106031668801901696693/activities/public?key=AIzaSyBYdInWt10UO6Xri6gX8lfg2dtvEEsVyfE</a>';
+
+$gpurl = 'https://www.googleapis.com/plus/v1/people/106031668801901696693/activities/public?key=AIzaSyBYdInWt10UO6Xri6gX8lfg2dtvEEsVyfE';
+$gghg = dc_curl_get_contents($gpurl);
+$gpjd = json_decode($gghg);
+
+print_r($gpjd);
+
+
+
 			
 			?>
             <p><a target="_blank" href="https://graph.facebook.com/v2.3/nextminingboom/feed?key=value&access_token=EAACEdEose0cBAPlJXyCkhLJt1XR29vuC4nfG81dFFrLMu5ZBup8nNrXf7WJu2BZCv8sZAUvzoz0aZAO78evr0ZAZCr4GuFXpGTMRmqE7LEP5cyLaLPnU5DkC9me9eGqNZAYmJ5hfAFvWDVi4ZAT2qtVGiuz6VLBZC4QVsH6IlchjE4wZDZD">https://graph.facebook.com/v2.3/nextminingboom/feed?key=value&amp;access_token=EAACEdEose0cBAPlJXyCkhLJt1XR29vuC4nfG81dFFrLMu5ZBup8nNrXf7WJu2BZCv8sZAUvzoz0aZAO78evr0ZAZCr4GuFXpGTMRmqE7LEP5cyLaLPnU5DkC9me9eGqNZAYmJ5hfAFvWDVi4ZAT2qtVGiuz6VLBZC4QVsH6IlchjE4wZDZD</a><?php echo 't:'.$pageLink;	?></p>
