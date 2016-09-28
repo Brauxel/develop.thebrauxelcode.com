@@ -91,10 +91,18 @@ if( isset( $get->errors ) ) {
 		//print_r($get->errors);
 } else {
 	 $gs = json_decode($get);
-	 //print_r($g);
+	 //print_r($gs);
+	 $d = $gs[0]->entities;
+	 print_r($d->urls[0]);
 	 
-	 foreach($gs as $g):
-	 print_r($g); echo '<br><br><br><br>';
+	 foreach($d as $g):
+	 print_r($g); echo '<br>';
+	 //echo 'text:'.$g->text.'<br>link:'.$g->url.'<br>';
+	 echo '<br><br><br><br>';
+	 foreach($g as $sg):
+	 	//print_r($sg->urls[0]);
+		//echo 't:'.$sg->urls[0]->url;
+	 endforeach;
 	 endforeach;
 }
 
