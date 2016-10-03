@@ -1,362 +1,13 @@
-<?php get_header(); ?>
-    <main>
-        <div class="wrap">
-            <h1><?php the_title(); ?></h1>
-            <?php 
-			$pageUrl = 'https://graph.facebook.com/v2.7/nextminingboom?key=value&access_token=EAACEdEose0cBAIqqjWnqeawFq385pmCDXqzWZBZCTO7KlZAc6RPWXwaQJfyY4ZC8fYFSU4Fobw6AtGqmKYQBZCRqqD0QurkeLOme5MT1qnCNSlcS5lDp067hucw855qZCiIz2nrxh3pj74jxvanGLcBZC5UOI4E8Gjx48t51GKd8wZDZD&fields=id,link,name';
-			
-$graphUrl = 'https://graph.facebook.com/v2.7/nextminingboom/feed?key=value&access_token=EAACEdEose0cBAIqqjWnqeawFq385pmCDXqzWZBZCTO7KlZAc6RPWXwaQJfyY4ZC8fYFSU4Fobw6AtGqmKYQBZCRqqD0QurkeLOme5MT1qnCNSlcS5lDp067hucw855qZCiIz2nrxh3pj74jxvanGLcBZC5UOI4E8Gjx48t51GKd8wZDZD&fields=id,link,name,description,picture';
-			
-			
-// get page details
-$pageObject = file_get_contents($pageUrl);
-
-if ( $pageObject === false )
-{
-   $pageObject = dc_curl_get_contents($pageUrl);
-}
-
-
-$pageDetails  = json_decode($pageObject);
-$pageLink = isset($pageDetails->link) ? $pageDetails->link : '';
-$pageName = isset($pageDetails->name) ? $pageDetails->name : '';
-
-// get page feed
-$graphObject = file_get_contents($graphUrl);
-
-if ( $graphObject === false )
-{
-   $graphObject = dc_curl_get_contents($graphUrl);
-}
-
-$parsedJson  = json_decode($graphObject);
-$pagefeed = $parsedJson->data;
-foreach($pagefeed as $pageDetail):
-//print_r($pageDetail);
-$parts = parse_url($pageDetail->picture);
-parse_str($parts['query'], $query);
-//echo 'link:'.$pageDetail->link.'<br>name:'.$pageDetail->name.'<br>pic:'.$query['url'].'<br><br><br>';
-endforeach;
-
-function dc_curl_get_contents($url)
-{
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_URL, $url);
-    $data = curl_exec($ch);
-    curl_close($ch);
-    return $data;
-}
-
-//twiiter
-$consumer_key = 'qoIsEwbe6jD2fNa8udRKmcHlP';
-$consumer_secret = 'JLxkvNyzUOlCpKKSnNUMMZVZmFzghWbUbmi7SqA6LWubiDGUKX';
-$oauth_access_token = '2494038163-SHCXevnQzGCcsbOnhh4CImaPS8ZH75bKXe8nQmi';
-$oauth_access_token_secret = 'GQs9715ebiU3UIhgSkShPUQ8h6juAvjs7T5HSrfyolWgj';
-$id = 'finfeednews';
-$url_type = 'timeline';
-
-switch($url_type)
-{
-	case 'timeline':
-	$rest = 'statuses/user_timeline' ;
-	$params = Array('count' => $_GET['count'], 'include_rts' => $_GET['include_rts'], 'exclude_replies' => $_GET['exclude_replies'], 'screen_name' => $_GET['screen_name']);
-	break;
-	case 'search':
-	$rest = "search/tweets";
-	$params = Array('q' => $_GET['q'], 'count' => $_GET['count'], 'include_rts' => $_GET['include_rts']);
-	break;
-	case 'list':
-	$rest = "lists/statuses";
-	$params = Array('list_id' => $_GET['list_id'], 'count' => $_GET['count'], 'include_rts' => $_GET['include_rts']);
-	break;
-	default:
-	$rest = 'statuses/user_timeline' ;
-	$params = Array('count' => '20');
-	break;
-}
-
-
-$auth = new dcwss_TwitterOAuth($consumer_key,$consumer_secret,$oauth_access_token,$oauth_access_token_secret);
-$get = $auth->get( $rest, $params );
-
-if( ! $get ) {
-	echo 'An error occurs while reading the feed, please check your connection or settings';
-}
-		
-if( isset( $get->errors ) ) {
-		//	foreach( $get->errors as $key => $val ) echo $val;
-		echo 'errors';
-		//print_r($get->errors);
-} else {
-	 $gs = json_decode($get);
-	 //print_r($gs);
-	 $d = $gs[0]->entities;
-	 print_r($d->urls[0]);
-	 
-	 foreach($d as $g):
-	 print_r($g); echo '<br>';
-	 //echo 'text:'.$g->text.'<br>link:'.$g->url.'<br>';
-	 echo '<br><br><br><br>';
-	 foreach($g as $sg):
-	 	//print_r($sg->urls[0]);
-		//echo 't:'.$sg->urls[0]->url;
-	 endforeach;
-	 endforeach;
-}
-
-
-/*
- * Abraham Williams (abraham@abrah.am) http://abrah.am
- *
- * The first PHP Library to support OAuth for Twitter's REST API.
- */
-
-/**
- * Twitter OAuth class
- */
-class dcwss_TwitterOAuth {
-  /* Contains the last HTTP status code returned. */
-  public $http_code;
-  /* Contains the last API call. */
-  public $url;
-  /* Set up the API root URL. */
-  public $host = "https://api.twitter.com/1.1/";
-  /* Set timeout default. */
-  public $timeout = 30;
-  /* Set connect timeout. */
-  public $connecttimeout = 30; 
-  /* Verify SSL Cert. */
-  public $ssl_verifypeer = FALSE;
-  /* Respons format. */
-  public $format = 'json';
-  /* Decode returned json data. */
-  public $decode_json = false;
-  /* Contains the last HTTP headers returned. */
-  public $http_info;
-  /* Set the useragnet. */
-  public $useragent = 'TwitterOAuth v0.2.0-beta2';
-  /* Immediately retry the API call if the response was not successful. */
-  //public $retry = TRUE;
-
-
-
-
-  /**
-   * Set API URLS
-   */
-  function accessTokenURL()  { return 'https://api.twitter.com/oauth/access_token'; }
-  function authenticateURL() { return 'https://api.twitter.com/oauth/authenticate'; }
-  function authorizeURL()    { return 'https://api.twitter.com/oauth/authorize'; }
-  function requestTokenURL() { return 'https://api.twitter.com/oauth/request_token'; }
-
-  /**
-   * Debug helpers
-   */
-  function lastStatusCode() { return $this->http_status; }
-  function lastAPICall() { return $this->last_api_call; }
-
-  /**
-   * construct TwitterOAuth object
-   */
-  function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {
-    $this->sha1_method = new dcwss_OAuthSignatureMethod_HMAC_SHA1();
-    $this->consumer = new dcwss_OAuthConsumer($consumer_key, $consumer_secret);
-    if (!empty($oauth_token) && !empty($oauth_token_secret)) {
-      $this->token = new dcwss_OAuthConsumer($oauth_token, $oauth_token_secret);
-    } else {
-      $this->token = NULL;
-    }
-  }
-
-
-  /**
-   * Get a request_token from Twitter
-   *
-   * @returns a key/value array containing oauth_token and oauth_token_secret
-   */
-  function getRequestToken($oauth_callback = NULL) {
-    $parameters = array();
-    if (!empty($oauth_callback)) {
-      $parameters['oauth_callback'] = $oauth_callback;
-    } 
-    $request = $this->dcwss_OAuthRequest($this->requestTokenURL(), 'GET', $parameters);
-    $token = dcwss_OAuthUtil::parse_parameters($request);
-    $this->token = new dcwss_OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
-    return $token;
-  }
-
-  /**
-   * Get the authorize URL
-   *
-   * @returns a string
-   */
-  function getAuthorizeURL($token, $sign_in_with_twitter = TRUE) {
-    if (is_array($token)) {
-      $token = $token['oauth_token'];
-    }
-    if (empty($sign_in_with_twitter)) {
-      return $this->authorizeURL() . "?oauth_token={$token}";
-    } else {
-       return $this->authenticateURL() . "?oauth_token={$token}";
-    }
-  }
-
-  /**
-   * Exchange request token and secret for an access token and
-   * secret, to sign API calls.
-   *
-   * @returns array("oauth_token" => "the-access-token",
-   *                "oauth_token_secret" => "the-access-secret",
-   *                "user_id" => "9436992",
-   *                "screen_name" => "abraham")
-   */
-  function getAccessToken($oauth_verifier = FALSE) {
-    $parameters = array();
-    if (!empty($oauth_verifier)) {
-      $parameters['oauth_verifier'] = $oauth_verifier;
-    }
-    $request = $this->dcwss_OAuthRequest($this->accessTokenURL(), 'GET', $parameters);
-    $token = dcwss_OAuthUtil::parse_parameters($request);
-    $this->token = new dcwss_OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
-    return $token;
-  }
-
-  /**
-   * One time exchange of username and password for access token and secret.
-   *
-   * @returns array("oauth_token" => "the-access-token",
-   *                "oauth_token_secret" => "the-access-secret",
-   *                "user_id" => "9436992",
-   *                "screen_name" => "abraham",
-   *                "x_auth_expires" => "0")
-   */  
-  function getXAuthToken($username, $password) {
-    $parameters = array();
-    $parameters['x_auth_username'] = $username;
-    $parameters['x_auth_password'] = $password;
-    $parameters['x_auth_mode'] = 'client_auth';
-    $request = $this->dcwss_OAuthRequest($this->accessTokenURL(), 'POST', $parameters);
-    $token = dcwss_OAuthUtil::parse_parameters($request);
-    $this->token = new dcwss_OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
-    return $token;
-  }
-
-  /**
-   * GET wrapper for dcwss_OAuthRequest.
-   */
-  function get($url, $parameters = array()) {
-    $response = $this->dcwss_OAuthRequest($url, 'GET', $parameters);
-    if ($this->format === 'json' && $this->decode_json) {
-      return json_decode($response);
-    }
-    return $response;
-  }
-  
-  /**
-   * POST wrapper for dcwss_OAuthRequest.
-   */
-  function post($url, $parameters = array()) {
-    $response = $this->dcwss_OAuthRequest($url, 'POST', $parameters);
-    if ($this->format === 'json' && $this->decode_json) {
-      return json_decode($response);
-    }
-    return $response;
-  }
-
-  /**
-   * DELETE wrapper for oAuthReqeust.
-   */
-  function delete($url, $parameters = array()) {
-    $response = $this->dcwss_OAuthRequest($url, 'DELETE', $parameters);
-    if ($this->format === 'json' && $this->decode_json) {
-      return json_decode($response);
-    }
-    return $response;
-  }
-
-  /**
-   * Format and sign an OAuth / API request
-   */
-  function dcwss_OAuthRequest($url, $method, $parameters) {
-    if (strrpos($url, 'https://') !== 0 && strrpos($url, 'http://') !== 0) {
-      $url = "{$this->host}{$url}.{$this->format}";
-    }
-    $request = dcwss_OAuthRequest::from_consumer_and_token($this->consumer, $this->token, $method, $url, $parameters);
-    $request->sign_request($this->sha1_method, $this->consumer, $this->token);
-    switch ($method) {
-    case 'GET':
-      return $this->http($request->to_url(), 'GET');
-    default:
-      return $this->http($request->get_normalized_http_url(), $method, $request->to_postdata());
-    }
-  }
-
-  /**
-   * Make an HTTP request
-   *
-   * @return API results
-   */
-  function http($url, $method, $postfields = NULL) {
-    $this->http_info = array();
-    $ci = curl_init();
-    /* Curl settings */
-    curl_setopt($ci, CURLOPT_USERAGENT, $this->useragent);
-    curl_setopt($ci, CURLOPT_CONNECTTIMEOUT, $this->connecttimeout);
-    curl_setopt($ci, CURLOPT_TIMEOUT, $this->timeout);
-    curl_setopt($ci, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($ci, CURLOPT_HTTPHEADER, array('Expect:'));
-    curl_setopt($ci, CURLOPT_SSL_VERIFYPEER, $this->ssl_verifypeer);
-    curl_setopt($ci, CURLOPT_HEADERFUNCTION, array($this, 'getHeader'));
-    curl_setopt($ci, CURLOPT_HEADER, FALSE);
-
-    switch ($method) {
-      case 'POST':
-        curl_setopt($ci, CURLOPT_POST, TRUE);
-        if (!empty($postfields)) {
-          curl_setopt($ci, CURLOPT_POSTFIELDS, $postfields);
-        }
-        break;
-      case 'DELETE':
-        curl_setopt($ci, CURLOPT_CUSTOMREQUEST, 'DELETE');
-        if (!empty($postfields)) {
-          $url = "{$url}?{$postfields}";
-        }
-    }
-
-    curl_setopt($ci, CURLOPT_URL, $url);
-    $response = curl_exec($ci);
-    $this->http_code = curl_getinfo($ci, CURLINFO_HTTP_CODE);
-    $this->http_info = array_merge($this->http_info, curl_getinfo($ci));
-    $this->url = $url;
-    curl_close ($ci);
-    return $response;
-  }
-
-  /**
-   * Get the header info to store.
-   */
-  function getHeader($ch, $header) {
-    $i = strpos($header, ':');
-    if (!empty($i)) {
-      $key = str_replace('-', '_', strtolower(substr($header, 0, $i)));
-      $value = trim(substr($header, $i + 2));
-      $this->http_header[$key] = $value;
-    }
-    return strlen($header);
-  }
-}
-
+<?php
 // vim: foldmethod=marker
 
 /* Generic exception class
  */
-class dcwss_OAuthException extends Exception {
+class LinkedinLinkedinOAuthException extends Exception {
   // pass
 }
 
-class dcwss_OAuthConsumer {
+class OAuthConsumer {
   public $key;
   public $secret;
 
@@ -371,7 +22,7 @@ class dcwss_OAuthConsumer {
   }
 }
 
-class dcwss_OAuthToken {
+class OAuthToken {
   // access tokens and request tokens
   public $key;
   public $secret;
@@ -391,9 +42,9 @@ class dcwss_OAuthToken {
    */
   function to_string() {
     return "oauth_token=" .
-           dcwss_OAuthUtil::urlencode_rfc3986($this->key) .
+           OAuthUtil::urlencode_rfc3986($this->key) .
            "&oauth_token_secret=" .
-           dcwss_OAuthUtil::urlencode_rfc3986($this->secret);
+           OAuthUtil::urlencode_rfc3986($this->secret);
   }
 
   function __toString() {
@@ -405,7 +56,7 @@ class dcwss_OAuthToken {
  * A class for implementing a Signature Method
  * See section 9 ("Signing Requests") in the spec
  */
-abstract class dcwss_OAuthSignatureMethod {
+abstract class OAuthSignatureMethod {
   /**
    * Needs to return the name of the Signature Method (ie HMAC-SHA1)
    * @return string
@@ -415,20 +66,20 @@ abstract class dcwss_OAuthSignatureMethod {
   /**
    * Build up the signature
    * NOTE: The output of this function MUST NOT be urlencoded.
-   * the encoding is handled in dcwss_OAuthRequest when the final
+   * the encoding is handled in OAuthRequest when the final
    * request is serialized
-   * @param dcwss_OAuthRequest $request
+   * @param OAuthRequest $request
    * @param OAuthConsumer $consumer
-   * @param dcwss_OAuthToken $token
+   * @param OAuthToken $token
    * @return string
    */
   abstract public function build_signature($request, $consumer, $token);
 
   /**
    * Verifies that a given signature is correct
-   * @param dcwss_OAuthRequest $request
+   * @param OAuthRequest $request
    * @param OAuthConsumer $consumer
-   * @param dcwss_OAuthToken $token
+   * @param OAuthToken $token
    * @param string $signature
    * @return bool
    */
@@ -445,7 +96,7 @@ abstract class dcwss_OAuthSignatureMethod {
  * character (ASCII code 38) even if empty.
  *   - Chapter 9.2 ("HMAC-SHA1")
  */
-class dcwss_OAuthSignatureMethod_HMAC_SHA1 extends dcwss_OAuthSignatureMethod {
+class OAuthSignatureMethod_HMAC_SHA1 extends OAuthSignatureMethod {
   function get_name() {
     return "HMAC-SHA1";
   }
@@ -459,7 +110,7 @@ class dcwss_OAuthSignatureMethod_HMAC_SHA1 extends dcwss_OAuthSignatureMethod {
       ($token) ? $token->secret : ""
     );
 
-    $key_parts = dcwss_OAuthUtil::urlencode_rfc3986($key_parts);
+    $key_parts = OAuthUtil::urlencode_rfc3986($key_parts);
     $key = implode('&', $key_parts);
 
     return base64_encode(hash_hmac('sha1', $base_string, $key, true));
@@ -471,7 +122,7 @@ class dcwss_OAuthSignatureMethod_HMAC_SHA1 extends dcwss_OAuthSignatureMethod {
  * over a secure channel such as HTTPS. It does not use the Signature Base String.
  *   - Chapter 9.4 ("PLAINTEXT")
  */
-class dcwss_OAuthSignatureMethod_PLAINTEXT extends dcwss_OAuthSignatureMethod {
+class OAuthSignatureMethod_PLAINTEXT extends OAuthSignatureMethod {
   public function get_name() {
     return "PLAINTEXT";
   }
@@ -483,7 +134,7 @@ class dcwss_OAuthSignatureMethod_PLAINTEXT extends dcwss_OAuthSignatureMethod {
    *   - Chapter 9.4.1 ("Generating Signatures")
    *
    * Please note that the second encoding MUST NOT happen in the SignatureMethod, as
-   * dcwss_OAuthRequest handles this!
+   * OAuthRequest handles this!
    */
   public function build_signature($request, $consumer, $token) {
     $key_parts = array(
@@ -491,7 +142,7 @@ class dcwss_OAuthSignatureMethod_PLAINTEXT extends dcwss_OAuthSignatureMethod {
       ($token) ? $token->secret : ""
     );
 
-    $key_parts = dcwss_OAuthUtil::urlencode_rfc3986($key_parts);
+    $key_parts = OAuthUtil::urlencode_rfc3986($key_parts);
     $key = implode('&', $key_parts);
     $request->base_string = $key;
 
@@ -507,7 +158,7 @@ class dcwss_OAuthSignatureMethod_PLAINTEXT extends dcwss_OAuthSignatureMethod {
  * specification.
  *   - Chapter 9.3 ("RSA-SHA1")
  */
-abstract class dcwss_OAuthSignatureMethod_RSA_SHA1 extends dcwss_OAuthSignatureMethod {
+abstract class OAuthSignatureMethod_RSA_SHA1 extends OAuthSignatureMethod {
   public function get_name() {
     return "RSA-SHA1";
   }
@@ -566,7 +217,7 @@ abstract class dcwss_OAuthSignatureMethod_RSA_SHA1 extends dcwss_OAuthSignatureM
   }
 }
 
-class dcwss_OAuthRequest {
+class OAuthRequest {
   private $parameters;
   private $http_method;
   private $http_url;
@@ -577,7 +228,7 @@ class dcwss_OAuthRequest {
 
   function __construct($http_method, $http_url, $parameters=NULL) {
     @$parameters or $parameters = array();
-    $parameters = array_merge( dcwss_OAuthUtil::parse_parameters(parse_url($http_url, PHP_URL_QUERY)), $parameters);
+    $parameters = array_merge( OAuthUtil::parse_parameters(parse_url($http_url, PHP_URL_QUERY)), $parameters);
     $this->parameters = $parameters;
     $this->http_method = $http_method;
     $this->http_url = $http_url;
@@ -604,10 +255,10 @@ class dcwss_OAuthRequest {
     // parsed parameter-list
     if (!$parameters) {
       // Find request headers
-      $request_headers = dcwss_OAuthUtil::get_headers();
+      $request_headers = OAuthUtil::get_headers();
 
       // Parse the query-string to find GET parameters
-      $parameters = dcwss_OAuthUtil::parse_parameters($_SERVER['QUERY_STRING']);
+      $parameters = OAuthUtil::parse_parameters($_SERVER['QUERY_STRING']);
 
       // It's a POST request of the proper content-type, so parse POST
       // parameters and add those overriding any duplicates from GET
@@ -615,7 +266,7 @@ class dcwss_OAuthRequest {
           && @strstr($request_headers["Content-Type"],
                      "application/x-www-form-urlencoded")
           ) {
-        $post_data = dcwss_OAuthUtil::parse_parameters(
+        $post_data = OAuthUtil::parse_parameters(
           file_get_contents(self::$POST_INPUT)
         );
         $parameters = array_merge($parameters, $post_data);
@@ -624,7 +275,7 @@ class dcwss_OAuthRequest {
       // We have a Authorization-header with OAuth data. Parse the header
       // and add those overriding any duplicates from GET or POST
       if (@substr($request_headers['Authorization'], 0, 6) == "OAuth ") {
-        $header_parameters = dcwss_OAuthUtil::split_header(
+        $header_parameters = OAuthUtil::split_header(
           $request_headers['Authorization']
         );
         $parameters = array_merge($parameters, $header_parameters);
@@ -632,7 +283,7 @@ class dcwss_OAuthRequest {
 
     }
 
-    return new dcwss_OAuthRequest($http_method, $http_url, $parameters);
+    return new OAuthRequest($http_method, $http_url, $parameters);
   }
 
   /**
@@ -640,16 +291,16 @@ class dcwss_OAuthRequest {
    */
   public static function from_consumer_and_token($consumer, $token, $http_method, $http_url, $parameters=NULL) {
     @$parameters or $parameters = array();
-    $defaults = array("oauth_version" => dcwss_OAuthRequest::$version,
-                      "oauth_nonce" => dcwss_OAuthRequest::generate_nonce(),
-                      "oauth_timestamp" => dcwss_OAuthRequest::generate_timestamp(),
+    $defaults = array("oauth_version" => OAuthRequest::$version,
+                      "oauth_nonce" => OAuthRequest::generate_nonce(),
+                      "oauth_timestamp" => OAuthRequest::generate_timestamp(),
                       "oauth_consumer_key" => $consumer->key);
     if ($token)
       $defaults['oauth_token'] = $token->key;
 
     $parameters = array_merge($defaults, $parameters);
 
-    return new dcwss_OAuthRequest($http_method, $http_url, $parameters);
+    return new OAuthRequest($http_method, $http_url, $parameters);
   }
 
   public function set_parameter($name, $value, $allow_duplicates = true) {
@@ -693,7 +344,7 @@ class dcwss_OAuthRequest {
       unset($params['oauth_signature']);
     }
 
-    return dcwss_OAuthUtil::build_http_query($params);
+    return OAuthUtil::build_http_query($params);
   }
 
   /**
@@ -710,7 +361,7 @@ class dcwss_OAuthRequest {
       $this->get_signable_parameters()
     );
 
-    $parts = dcwss_OAuthUtil::urlencode_rfc3986($parts);
+    $parts = OAuthUtil::urlencode_rfc3986($parts);
 
     return implode('&', $parts);
   }
@@ -759,32 +410,29 @@ class dcwss_OAuthRequest {
    * builds the data one would send in a POST request
    */
   public function to_postdata() {
-    return dcwss_OAuthUtil::build_http_query($this->parameters);
+    return OAuthUtil::build_http_query($this->parameters);
   }
 
   /**
    * builds the Authorization: header
    */
   public function to_header($realm=null) {
-    $first = true;
-	if($realm) {
-      $out = 'Authorization: OAuth realm="' . dcwss_OAuthUtil::urlencode_rfc3986($realm) . '"';
-      $first = false;
-    } else
+	if($realm)
+      $out = 'Authorization: OAuth realm="' . OAuthUtil::urlencode_rfc3986($realm) . '"';
+    else
       $out = 'Authorization: OAuth';
 
     $total = array();
     foreach ($this->parameters as $k => $v) {
       if (substr($k, 0, 5) != "oauth") continue;
       if (is_array($v)) {
-        throw new dcwss_OAuthException('Arrays not supported in headers');
+        throw new LinkedinLinkedinOAuthException('Arrays not supported in headers');
       }
-      $out .= ($first) ? ' ' : ',';
-      $out .= dcwss_OAuthUtil::urlencode_rfc3986($k) .
+      $out .= ',' .
+              OAuthUtil::urlencode_rfc3986($k) .
               '="' .
-              dcwss_OAuthUtil::urlencode_rfc3986($v) .
+              OAuthUtil::urlencode_rfc3986($v) .
               '"';
-      $first = false;
     }
     return $out;
   }
@@ -827,7 +475,7 @@ class dcwss_OAuthRequest {
   }
 }
 
-class dcwss_OAuthServer {
+class OAuthServer {
   protected $timestamp_threshold = 300; // in seconds, five minutes
   protected $version = '1.0';             // hi blaine
   protected $signature_methods = array();
@@ -910,7 +558,7 @@ class dcwss_OAuthServer {
       $version = '1.0';
     }
     if ($version !== $this->version) {
-      throw new dcwss_OAuthException("OAuth version '$version' not supported");
+      throw new LinkedinOAuthException("OAuth version '$version' not supported");
     }
     return $version;
   }
@@ -925,12 +573,12 @@ class dcwss_OAuthServer {
     if (!$signature_method) {
       // According to chapter 7 ("Accessing Protected Ressources") the signature-method
       // parameter is required, and we can't just fallback to PLAINTEXT
-      throw new dcwss_OAuthException('No signature method parameter. This parameter is required');
+      throw new LinkedinOAuthException('No signature method parameter. This parameter is required');
     }
 
     if (!in_array($signature_method,
                   array_keys($this->signature_methods))) {
-      throw new dcwss_OAuthException(
+      throw new LinkedinOAuthException(
         "Signature method '$signature_method' not supported " .
         "try one of the following: " .
         implode(", ", array_keys($this->signature_methods))
@@ -945,12 +593,12 @@ class dcwss_OAuthServer {
   private function get_consumer(&$request) {
     $consumer_key = @$request->get_parameter("oauth_consumer_key");
     if (!$consumer_key) {
-      throw new dcwss_OAuthException("Invalid consumer key");
+      throw new LinkedinOAuthException("Invalid consumer key");
     }
 
     $consumer = $this->data_store->lookup_consumer($consumer_key);
     if (!$consumer) {
-      throw new dcwss_OAuthException("Invalid consumer");
+      throw new LinkedinOAuthException("Invalid consumer");
     }
 
     return $consumer;
@@ -965,7 +613,7 @@ class dcwss_OAuthServer {
       $consumer, $token_type, $token_field
     );
     if (!$token) {
-      throw new dcwss_OAuthException("Invalid $token_type token: $token_field");
+      throw new LinkedinOAuthException("Invalid $token_type token: $token_field");
     }
     return $token;
   }
@@ -993,7 +641,7 @@ class dcwss_OAuthServer {
     );
 
     if (!$valid_sig) {
-      throw new dcwss_OAuthException("Invalid signature");
+      throw new LinkedinOAuthException("Invalid signature");
     }
   }
 
@@ -1002,14 +650,14 @@ class dcwss_OAuthServer {
    */
   private function check_timestamp($timestamp) {
     if( ! $timestamp )
-      throw new dcwss_OAuthException(
+      throw new LinkedinOAuthException(
         'Missing timestamp parameter. The parameter is required'
       );
     
     // verify that timestamp is recentish
     $now = time();
     if (abs($now - $timestamp) > $this->timestamp_threshold) {
-      throw new dcwss_OAuthException(
+      throw new LinkedinOAuthException(
         "Expired timestamp, yours $timestamp, ours $now"
       );
     }
@@ -1020,7 +668,7 @@ class dcwss_OAuthServer {
    */
   private function check_nonce($consumer, $token, $nonce, $timestamp) {
     if( ! $nonce )
-      throw new dcwss_OAuthException(
+      throw new LinkedinOAuthException(
         'Missing nonce parameter. The parameter is required'
       );
 
@@ -1032,13 +680,13 @@ class dcwss_OAuthServer {
       $timestamp
     );
     if ($found) {
-      throw new dcwss_OAuthException("Nonce already used: $nonce");
+      throw new LinkedinOAuthException("Nonce already used: $nonce");
     }
   }
 
 }
 
-class dcwss_OAuthDataStore {
+class OAuthDataStore {
   function lookup_consumer($consumer_key) {
     // implement me
   }
@@ -1064,10 +712,10 @@ class dcwss_OAuthDataStore {
 
 }
 
-class dcwss_OAuthUtil {
+class OAuthUtil {
   public static function urlencode_rfc3986($input) {
   if (is_array($input)) {
-    return array_map(array('dcwss_OAuthUtil', 'urlencode_rfc3986'), $input);
+    return array_map(array('OAuthUtil', 'urlencode_rfc3986'), $input);
   } else if (is_scalar($input)) {
     return str_replace(
       '+',
@@ -1099,7 +747,7 @@ class dcwss_OAuthUtil {
       $header_name = $matches[2][0];
       $header_content = (isset($matches[5])) ? $matches[5][0] : $matches[4][0];
       if (preg_match('/^oauth_/', $header_name) || !$only_allow_oauth_parameters) {
-        $params[$header_name] = dcwss_OAuthUtil::urldecode_rfc3986($header_content);
+        $params[$header_name] = OAuthUtil::urldecode_rfc3986($header_content);
       }
       $offset = $match[1] + strlen($match[0]);
     }
@@ -1135,11 +783,6 @@ class dcwss_OAuthUtil {
       // otherwise we don't have apache and are just going to have to hope
       // that $_SERVER actually contains what we need
       $out = array();
-      if( isset($_SERVER['CONTENT_TYPE']) )
-        $out['Content-Type'] = $_SERVER['CONTENT_TYPE'];
-      if( isset($_ENV['CONTENT_TYPE']) )
-        $out['Content-Type'] = $_ENV['CONTENT_TYPE'];
-
       foreach ($_SERVER as $key => $value) {
         if (substr($key, 0, 5) == "HTTP_") {
           // this is chaos, basically it is just there to capitalize the first
@@ -1168,8 +811,8 @@ class dcwss_OAuthUtil {
     $parsed_parameters = array();
     foreach ($pairs as $pair) {
       $split = explode('=', $pair, 2);
-      $parameter = dcwss_OAuthUtil::urldecode_rfc3986($split[0]);
-      $value = isset($split[1]) ? dcwss_OAuthUtil::urldecode_rfc3986($split[1]) : '';
+      $parameter = OAuthUtil::urldecode_rfc3986($split[0]);
+      $value = isset($split[1]) ? OAuthUtil::urldecode_rfc3986($split[1]) : '';
 
       if (isset($parsed_parameters[$parameter])) {
         // We have already recieved parameter(s) with this name, so add to the list
@@ -1193,8 +836,8 @@ class dcwss_OAuthUtil {
     if (!$params) return '';
 
     // Urlencode both keys and values
-    $keys = dcwss_OAuthUtil::urlencode_rfc3986(array_keys($params));
-    $values = dcwss_OAuthUtil::urlencode_rfc3986(array_values($params));
+    $keys = OAuthUtil::urlencode_rfc3986(array_keys($params));
+    $values = OAuthUtil::urlencode_rfc3986(array_values($params));
     $params = array_combine($keys, $values);
 
     // Parameters are sorted by name, using lexicographical byte value ordering.
@@ -1220,32 +863,4 @@ class dcwss_OAuthUtil {
   }
 }
 
-
-
-// google plus stat
-echo '<a target="_blank" href="https://www.googleapis.com/plus/v1/people/106031668801901696693/activities/public?key=AIzaSyBYdInWt10UO6Xri6gX8lfg2dtvEEsVyfE">https://www.googleapis.com/plus/v1/people/106031668801901696693/activities/public?key=AIzaSyBYdInWt10UO6Xri6gX8lfg2dtvEEsVyfE</a>';
-
-$gpurl = 'https://www.googleapis.com/plus/v1/people/106031668801901696693/activities/public?key=AIzaSyBYdInWt10UO6Xri6gX8lfg2dtvEEsVyfE';
-$gghg = dc_curl_get_contents($gpurl);
-$gpjd = json_decode($gghg);
-
-print_r($gpjd);
-
-//Linkedin starts
-
-echo '<p>https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=81210wh3nbrsg6&redirect_uri=https%3A%2F%2Fdev.thebrauxelcode.com%2Fauth%2Flinkedin%2Fcallback&scope=r_basicprofile</p>';
-
-
-
-			
-			?>
-            <p><a target="_blank" href="https://graph.facebook.com/v2.3/nextminingboom/feed?key=value&access_token=EAACEdEose0cBAPlJXyCkhLJt1XR29vuC4nfG81dFFrLMu5ZBup8nNrXf7WJu2BZCv8sZAUvzoz0aZAO78evr0ZAZCr4GuFXpGTMRmqE7LEP5cyLaLPnU5DkC9me9eGqNZAYmJ5hfAFvWDVi4ZAT2qtVGiuz6VLBZC4QVsH6IlchjE4wZDZD">https://graph.facebook.com/v2.3/nextminingboom/feed?key=value&amp;access_token=EAACEdEose0cBAPlJXyCkhLJt1XR29vuC4nfG81dFFrLMu5ZBup8nNrXf7WJu2BZCv8sZAUvzoz0aZAO78evr0ZAZCr4GuFXpGTMRmqE7LEP5cyLaLPnU5DkC9me9eGqNZAYmJ5hfAFvWDVi4ZAT2qtVGiuz6VLBZC4QVsH6IlchjE4wZDZD</a><?php echo 't:'.$pageLink;	?></p>
-			<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
-	            <?php the_content(); ?>
-            <?php endwhile; else: ?>
-	            <p>No content!</p>
-            <?php endif; ?>
-        <!-- div.wrap ENDS -->
-        </div>
-    </main>
-<?php get_footer(); ?>
+?>
