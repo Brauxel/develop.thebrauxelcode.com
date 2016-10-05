@@ -93,6 +93,7 @@ if( isset( $get->errors ) ) {
 	 $gs = json_decode($get);
 	 echo '<h1>Twttier</h1>';
 	 //print_r($gs);
+	 
 	 foreach($gs as $g): foreach($g as $s):
 	 	print_r($s); echo '<br><br><br><br>';
 	 endforeach; endforeach;
