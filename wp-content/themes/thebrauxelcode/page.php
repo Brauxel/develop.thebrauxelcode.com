@@ -3,9 +3,9 @@
         <div class="wrap">
             <h1><?php the_title(); ?></h1>
             <?php 
-			$pageUrl = 'https://graph.facebook.com/v2.7/nextminingboom?key=value&access_token=EAACEdEose0cBAIqqjWnqeawFq385pmCDXqzWZBZCTO7KlZAc6RPWXwaQJfyY4ZC8fYFSU4Fobw6AtGqmKYQBZCRqqD0QurkeLOme5MT1qnCNSlcS5lDp067hucw855qZCiIz2nrxh3pj74jxvanGLcBZC5UOI4E8Gjx48t51GKd8wZDZD&fields=id,link,name';
+			$pageUrl = 'https://graph.facebook.com/v2.7/nextminingboom?key=value&access_token=1803640773184106|7ed56bf876ba8aeaa2bcc2fae92f3afb&fields=id,link,name';
 			
-$graphUrl = 'https://graph.facebook.com/v2.7/nextminingboom/feed?key=value&access_token=EAACEdEose0cBAIqqjWnqeawFq385pmCDXqzWZBZCTO7KlZAc6RPWXwaQJfyY4ZC8fYFSU4Fobw6AtGqmKYQBZCRqqD0QurkeLOme5MT1qnCNSlcS5lDp067hucw855qZCiIz2nrxh3pj74jxvanGLcBZC5UOI4E8Gjx48t51GKd8wZDZD&fields=id,link,name,description,picture';
+$graphUrl = 'https://graph.facebook.com/v2.3/finfeed/feed?key=value&access_token=1803640773184106|7ed56bf876ba8aeaa2bcc2fae92f3afb&fields=id,message,picture,link,name,description,type,icon,created_time,from,object_id,likes,comments&limit=100';
 			
 			
 // get page details

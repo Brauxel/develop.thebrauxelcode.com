@@ -1,0 +1,26 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+ 
+ .sms-general-settings, .sms-streams {
+	 background-color:#fff;
+	 padding:10px;
+	 margin-top:20px;
+ }
+ 
+ .sms-general-settings label, .sms-streams label {
+	 width:160px;
+	 font-size:14px;
+	 display:block;
+	 float:left;
+	 cursor:default;
+	 font-weight:600;
+	 line-height:28px;
+ }
+ 
+ .sms-general-settings input[type="text"], .sms-streams input[type="text"] {
+	 width:250px;
+	 display:block;
+	 float:left;
+}
