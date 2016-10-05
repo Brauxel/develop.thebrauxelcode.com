@@ -1,62 +1,33 @@
-<?php get_header(); ?>
-    <main>
-        <div class="wrap">
-            <h1><?php the_title(); ?></h1>
-            <?php 
-			$pageUrl = 'https://graph.facebook.com/v2.7/nextminingboom?key=value&access_token=1803640773184106|7ed56bf876ba8aeaa2bcc2fae92f3afb&fields=id,link,name';
-			
-$graphUrl = 'https://graph.facebook.com/v2.3/finfeed/feed?key=value&access_token=1803640773184106|7ed56bf876ba8aeaa2bcc2fae92f3afb&fields=id,message,picture,link,name,description,type,icon,created_time,from,object_id,likes,comments&limit=100';
-			
-			
-// get page details
-$pageObject = file_get_contents($pageUrl);
+<?php
 
-if ( $pageObject === false )
-{
-   $pageObject = dc_curl_get_contents($pageUrl);
-}
+/**
+ * Provide a public-facing view for the plugin
+ *
+ * This file is used to markup the public-facing aspects of the plugin.
+ *
+ * @link       http://thebrauxelcode.com/
+ * @since      1.0.0
+ *
+ * @package    Social_Media_Stream
+ * @subpackage Social_Media_Stream/public/partials
+ */
+?>
 
+<?php
+$consumer_key = isset($_GET['1']) ? $_GET['1'] : '';
+$consumer_secret = isset($_GET['2']) ? $_GET['2'] : '';
+$oauth_access_token = isset($_GET['3']) ? $_GET['3'] : NULL;
+$oauth_access_token_secret = isset($_GET['4']) ? $_GET['4'] : NULL;
+$url_type = isset($_GET['url']) ? $_GET['url'] : 'default';
 
-$pageDetails  = json_decode($pageObject);
-$pageLink = isset($pageDetails->link) ? $pageDetails->link : '';
-$pageName = isset($pageDetails->name) ? $pageDetails->name : '';
+/*
+$consumer_key = $_GET['1'];
+$consumer_secret = $_GET['2'];
+$oauth_access_token = $_GET['3'];
+$oauth_access_token_secret = $_GET['4'];
 
-// get page feed
-$graphObject = file_get_contents($graphUrl);
-
-if ( $graphObject === false )
-{
-   $graphObject = dc_curl_get_contents($graphUrl);
-}
-
-$parsedJson  = json_decode($graphObject);
-$pagefeed = $parsedJson->data;
-foreach($pagefeed as $pageDetail):
-//print_r($pageDetail);
-$parts = parse_url($pageDetail->picture);
-parse_str($parts['query'], $query);
-//echo 'link:'.$pageDetail->link.'<br>name:'.$pageDetail->name.'<br>pic:'.$query['url'].'<br><br><br>';
-endforeach;
-
-function dc_curl_get_contents($url)
-{
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_URL, $url);
-    $data = curl_exec($ch);
-    curl_close($ch);
-    return $data;
-}
-
-//twiiter
-$consumer_key = 'qoIsEwbe6jD2fNa8udRKmcHlP';
-$consumer_secret = 'JLxkvNyzUOlCpKKSnNUMMZVZmFzghWbUbmi7SqA6LWubiDGUKX';
-$oauth_access_token = '2494038163-SHCXevnQzGCcsbOnhh4CImaPS8ZH75bKXe8nQmi';
-$oauth_access_token_secret = 'GQs9715ebiU3UIhgSkShPUQ8h6juAvjs7T5HSrfyolWgj';
-$id = 'finfeednews';
-$url_type = 'timeline';
-
+switch($_GET['url'])
+*/
 switch($url_type)
 {
 	case 'timeline':
@@ -90,22 +61,10 @@ if( isset( $get->errors ) ) {
 		echo 'errors';
 		//print_r($get->errors);
 } else {
-	 $gs = json_decode($get);
-	 //print_r($gs);
-	 $d = $gs[0]->entities;
-	 print_r($d->urls[0]);
-	 
-	 foreach($d as $g):
-	 print_r($g); echo '<br>';
-	 //echo 'text:'.$g->text.'<br>link:'.$g->url.'<br>';
-	 echo '<br><br><br><br>';
-	 foreach($g as $sg):
-	 	//print_r($sg->urls[0]);
-		//echo 't:'.$sg->urls[0]->url;
-	 endforeach;
-	 endforeach;
+	//echo $get;
+	$gs = json_decode($get);
+	$d = $gs[0]->entities;
 }
-
 
 /*
  * Abraham Williams (abraham@abrah.am) http://abrah.am
@@ -662,6 +621,7 @@ class dcwss_OAuthRequest {
       }
 
       $this->parameters[$name][] = $value;
+
     } else {
       $this->parameters[$name] = $value;
     }
@@ -1218,34 +1178,4 @@ class dcwss_OAuthUtil {
     // Each name-value pair is separated by an '&' character (ASCII code 38)
     return implode('&', $pairs);
   }
-}
-
-
-
-// google plus stat
-echo '<a target="_blank" href="https://www.googleapis.com/plus/v1/people/106031668801901696693/activities/public?key=AIzaSyBYdInWt10UO6Xri6gX8lfg2dtvEEsVyfE">https://www.googleapis.com/plus/v1/people/106031668801901696693/activities/public?key=AIzaSyBYdInWt10UO6Xri6gX8lfg2dtvEEsVyfE</a>';
-
-$gpurl = 'https://www.googleapis.com/plus/v1/people/106031668801901696693/activities/public?key=AIzaSyBYdInWt10UO6Xri6gX8lfg2dtvEEsVyfE';
-$gghg = dc_curl_get_contents($gpurl);
-$gpjd = json_decode($gghg);
-
-print_r($gpjd);
-
-//Linkedin starts
-
-echo '<p>https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=81210wh3nbrsg6&redirect_uri=https%3A%2F%2Fdev.thebrauxelcode.com%2Fauth%2Flinkedin%2Fcallback&scope=r_basicprofile</p>';
-
-
-
-			
-			?>
-            <p><a target="_blank" href="https://graph.facebook.com/v2.3/nextminingboom/feed?key=value&access_token=EAACEdEose0cBAPlJXyCkhLJt1XR29vuC4nfG81dFFrLMu5ZBup8nNrXf7WJu2BZCv8sZAUvzoz0aZAO78evr0ZAZCr4GuFXpGTMRmqE7LEP5cyLaLPnU5DkC9me9eGqNZAYmJ5hfAFvWDVi4ZAT2qtVGiuz6VLBZC4QVsH6IlchjE4wZDZD">https://graph.facebook.com/v2.3/nextminingboom/feed?key=value&amp;access_token=EAACEdEose0cBAPlJXyCkhLJt1XR29vuC4nfG81dFFrLMu5ZBup8nNrXf7WJu2BZCv8sZAUvzoz0aZAO78evr0ZAZCr4GuFXpGTMRmqE7LEP5cyLaLPnU5DkC9me9eGqNZAYmJ5hfAFvWDVi4ZAT2qtVGiuz6VLBZC4QVsH6IlchjE4wZDZD</a><?php echo 't:'.$pageLink;	?></p>
-			<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
-	            <?php the_content(); ?>
-            <?php endwhile; else: ?>
-	            <p>No content!</p>
-            <?php endif; ?>
-        <!-- div.wrap ENDS -->
-        </div>
-    </main>
-<?php get_footer(); ?>
+} ?>

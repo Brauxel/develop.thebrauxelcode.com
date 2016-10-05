@@ -80,7 +80,7 @@ class Social_Media_Stream {
 		}
 		
 		// Add shortcodes
-		add_shortcode('sms_social_feed', 'sms_social_feed_shortcode');
+		add_shortcode('sms_social_feed', array('Social_Media_Stream','sms_social_feed_shortcode'));
 		
 	}
 
@@ -218,82 +218,34 @@ class Social_Media_Stream {
 	public function get_version() {
 		return $this->version;
 	}
-
-}
-
-/**
- * Run the function that is execute in place of the shortcode [sms_social_feed].
- *
- * @since    1.0.0
- */
-function sms_social_feed_shortcode() {
-	//echo $this->facebook_feed_rendered();
-	//echo $this->facebook_feed_rendered();
-	$facebook = facebook_feed_rendered();
-	$html = '<div class="facebook"><h2>FB</h2><br>';
-	foreach( $facebook as $fb ):
-		$html .= '<img src="'.$fb['pic'].'"><p>'.$fb['name'].'</p><p><a href="'.$fb['link'].'" target="_blank">Go to post</a></p>';
-	endforeach;
-	$html .= '</div>';
-	return $html;
-}
-
-/**
- * Create an array for facebook feed from the open graph API
- *
- * @since    1.0.0
- */
-function facebook_feed_rendered() {
-	$pageUrl = 'https://graph.facebook.com/v2.7/nextminingboom?key=value&access_token=1803640773184106|7ed56bf876ba8aeaa2bcc2fae92f3afb&fields=id,link,name';
-			  
-	$graphUrl = 'https://graph.facebook.com/v2.3/finfeed/feed?key=value&access_token=1803640773184106|7ed56bf876ba8aeaa2bcc2fae92f3afb&fields=id,message,picture,link,name,description,type,icon,created_time,from,object_id,likes,comments&limit=10';
 	
-	// get page details
-	$pageObject = file_get_contents($pageUrl);
-	
-	if ( $pageObject === false )
-	{
-		$pageObject = dc_curl_get_contents($pageUrl);
+	/**
+	 * Run the function that is execute in place of the shortcode [sms_social_feed].
+	 *
+	 * @since    1.0.0
+	 */
+	public function sms_social_feed_shortcode() {
+		//echo $this->facebook_feed_rendered();
+		//echo $this->facebook_feed_rendered();
+
+		/**
+		 * The class responsible for defining all actions that occur in the public-facing
+		 * side of the site.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/sms-facebook.php';
+		
+		$facebook = facebook_feed_rendered();
+		$html = '<div class="facebook"><h2>FB</h2><br>';
+		
+		foreach( $facebook as $fb ):
+			$html .= '<img src="'.$fb['pic'].'"><p>'.$fb['name'].'</p><p><a href="'.$fb['link'].'" target="_blank">Go to post</a></p>';
+		endforeach;
+		
+		$html .= '</div>';
+		$html .= '<div class="twitter"><h2>FB</h2><br>';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/sms-twitter.php';
+		$html .= '</div>';
+		
+		return $html;
 	}
-	
-	
-	$pageDetails  = json_decode($pageObject);
-	$pageLink = isset($pageDetails->link) ? $pageDetails->link : '';
-	$pageName = isset($pageDetails->name) ? $pageDetails->name : '';
-	
-	// get page feed
-	$graphObject = file_get_contents($graphUrl);
-	
-	if ( $graphObject === false )
-	{
-		$graphObject = dc_curl_get_contents($graphUrl);
-	}
-	
-	$parsedJson  = json_decode($graphObject);
-	$pagefeed = $parsedJson->data;
-	$facebook_dets = array();
-	$i = 0;
-	foreach($pagefeed as $pageDetail):
-		//print_r($pageDetail);
-		$parts = parse_url($pageDetail->picture);
-		parse_str($parts[query], $query);
-		$facebook_dets[$i][link] = $pageDetail->link;
-		$facebook_dets[$i][name] = $pageDetail->name;
-		$facebook_dets[$i][pic] = $query['url'];
-		$i++;
-		//echo 'link:'.$pageDetail->link.'<br>name:'.$pageDetail->name.'<br>pic:'.$query['url'].'<br><br><br>';
-	endforeach;
-	
-	return $facebook_dets;
-}
-
-function dc_curl_get_contents($url)
-{
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_URL, $url);
-    $data = curl_exec($ch);
-    curl_close($ch);
-    return $data;
 }
